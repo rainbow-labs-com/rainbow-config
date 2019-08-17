@@ -1,0 +1,10 @@
+db:
+    main:
+        port: 5432
+        password: ${DB_PASSWORD}
+        host: ${db_host}
+        user: ${db_user}
+test: true
+anArray:
+    - itemOne
+    - itemTwo

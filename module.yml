@@ -1,0 +1,13 @@
+name: rainbow-config
+organization: rainbow-industries
+version: 1.0.0
+elevator-pitch: config loader for rainbow services
+engine:
+    node: 12.0.0+
+commands:
+    test: node --no-warnings --experimental-modules ./es-modules/distributed-systems/section-tests/x/bin/run.js ./test/*.js
+npm-convert:
+dev-link:
+    - ../distributed-systems/section-tests
+    - ../distributed-systems/esm-yaml
+    - ../distributed-systems/glob
