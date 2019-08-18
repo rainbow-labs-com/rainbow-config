@@ -56,8 +56,17 @@ export default class RainbowConfig {
         }
 
         const blob = await readFile(configFilePath);
+        const str = blob.toString().trim();
 
-        this.config = parse(blob.toString());
+        if (str.length === 0) {
+            this.config = {};
+        } else {
+             try {
+                this.config = parse(blob.toString());
+            } catch (err) {
+                throw new Error(`Failed to parse the configfile '${this.configFilePath}': ${err.message}`);
+            }
+        }
 
 
         if (this.secretsDir) {
