@@ -76,12 +76,10 @@ export default class RainbowConfig {
 
             const stats = await stat(secretsFilePath).catch(err => null);
 
-            if (!stats || !stats.isFile()) {
-                 throw new Error(`Failed to laod secrets file ${secretsFilePath}, file does not exist!`);
+            if (stats && stats.isFile()) {
+                const secretsBlog = await readFile(secretsFilePath);
+                this.secrets = new Map(Object.entries(parse(secretsBlog.toString())));
             }
-
-            const secretsBlog = await readFile(secretsFilePath);
-            this.secrets = new Map(Object.entries(parse(secretsBlog.toString())));
         }
 
 
