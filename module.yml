@@ -7,6 +7,9 @@ engine:
 commands:
     test: node --no-warnings --experimental-modules ./es-modules/distributed-systems/section-tests/x/bin/run.js ./test/*.js
 npm-convert:
+    source:
+        - ./src
+    destination: ./npm
 dev-link:
     - ../distributed-systems/section-tests
     - ../distributed-systems/esm-yaml
