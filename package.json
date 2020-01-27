@@ -2,7 +2,7 @@
   "type": "module",
   "name": "@rainbow-industries/rainbow-config",
   "main": "./npm/src/RainbowConfig.js",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "description": "An environment aware config file loader for rainbow services",
   "dependencies": {
     "@distributed-systems/glob": "^2.0.1",
