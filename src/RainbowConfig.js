@@ -64,7 +64,7 @@ export default class RainbowConfig {
              try {
                 this.config = parse(blob.toString());
             } catch (err) {
-                throw new Error(`Failed to parse the configfile '${this.configFilePath}': ${err.message}`);
+                throw new Error(`Failed to parse the configfile '${configFilePath}': ${err.message}`);
             }
         }
 
