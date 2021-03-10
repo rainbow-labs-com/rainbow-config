@@ -91,7 +91,7 @@ export default class RainbowConfig {
 
 
     replaceSecrets(subTree, prentKey, parent, path) {
-        if (typeof subTree === 'object') {
+        if (typeof subTree === 'object' && subTree !== null) {
             for (const key of Object.keys(subTree)) {
                 this.replaceSecrets(subTree[key], key, subTree, path.concat([key]));
             }
