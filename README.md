@@ -117,10 +117,10 @@ config.setConfigDir('conf');
 
 ### Load the confguration: config.load(rootDir: string)
 
-In order to load the config, you have to call the `load` method. This will load the config from the `\`${rootPath}/config\`` directory.
+In order to load the config, you have to call the `load` method. This will load the config from the `${rootPath}/config` directory.
 This will load the config file an fill all variables that are either set in the environment or the secrets file. If a variable is not
 found in an env variable, it is assumed, that it shall be loaded from the secrets file, which is located in the `rootPath` passed to the
-`load(rootPath: string)` method. The secrets file has the name `\`secrets.${environment}.yaml\``.
+`load(rootPath: string)` method. The secrets file has the name `secrets.${environment}.yaml`.
 
 
 ```typescript
