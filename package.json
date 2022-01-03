@@ -1,7 +1,7 @@
 {
   "type": "module",
   "name": "@rainbow-industries/rainbow-config",
-  "version": "2.0.1",
+  "version": "2.0.2",
   "description": "A YAML config file loader",
   "dependencies": {
     "yaml": "^1.10.2"
@@ -22,5 +22,10 @@
   },
   "main": "dist/index.js",
   "types": "dist/index.d.js",
-  "keywords": ["config-loader", "config-file", "config", "yaml"]
+  "keywords": [
+    "config-loader",
+    "config-file",
+    "config",
+    "yaml"
+  ]
 }
