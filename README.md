@@ -1,12 +1,21 @@
 # Rainbow Config
 
-An environment aware config file loader for rainbow services
+YAML config files made simple for TypeScript and JavaScript using ESM.
+
+## Changelog
+
+***Version 2.x*** 
+- The constructor does not take any arguments anymore. The path is now passed to the `load()` method
+- The `load()` method has now one argument: the path
+- The library was re-implemented using TypeScript and exports types
+- The library can stimm be used using JavaScript
+
 
 ## Example config file
 
 The DBs host and password are loaded either from a secrets file or from environment variables.
 
-**config.yml**
+**config/development.yml**
 ```yaml
 db:
     main
@@ -19,7 +28,7 @@ anArray
     - itemTwo
 ```
 
-**secrets.yml**
+**secrets.development.yml**
 ```yaml
 DB_HOST: l.dns.porn
 MAIN_DB_PASS: soSecureICantBelieveIt
@@ -27,84 +36,117 @@ MAIN_DB_PASS: soSecureICantBelieveIt
 
 ## Environments
 
-The config loader decides based on the environment which config file to load. The following default environments are available (you ma also define custom environments):
+The config loader decides based on the environment which config file to load. The following default environments are available (you may also define custom environments):
 
-- dev: local development config
-- dev.testing: local testing config
-- int: integration 
-- testing: automated testing
-- prod: production
+- development
+- testing
+- integration
+- production
 
-The environment can either be set by passing it as parameter to the application (e.g. `--dev`) or by defining it in the `RAINBOW_ENV` environment variable.
+The environment can either be set by passing it as parameter to the application (e.g. `--develpment`) or by defining it in the `RAINBOW_ENV` or `NODE_ENV` environment variable.
 
-Based on the configured environment the config file is loaded. If the `dev` environment is active, the loader tries to load the `config.dev.yml` file.
+Based on the configured environment the config file is loaded. If the `development` environment is active, the loader tries to load the `config/development.yml` file.
+
+## Example
+
+It is based on the example config above.
+
+```typescript
+import RainbowConfig from '@rainbow-config/RainbowConfig';
+import { URL } from 'url';
+import path from 'path';
+
+const config = new RainbowConfig();
+
+// you may add custom environments
+config.addEnvironment('extra-env');
+
+// you may laod the config from a custom directory, default is config
+config.setConfigDir('conf');
+
+// get the directory where the config filder is located in
+const rootdir = path.join(path.dirname(new URL(import.meta.url).pathname, '../');
+
+// load the config file
+await config.load(rootdir);
+
+// get the full config object
+const allKeys = config.get();
+
+// get the db password
+const dbPassword = config.get('db.main.password');
+
+// prints: soSecureICantBelieveIt
+console.log(dbPassword);
+```
 
 ## API
 
-Basic config loading example
+### Constructor: instantiate the config class
 
-```javascrript
-import RainbowConfig from '../es-modules/rainbow-industries/rainbow-config/1.x/RainbowConfig.js';
-import path from 'path';
+The constructor doesn't take any arguments
 
-// gets the path to the dir this script resides in
-const configDir = path.dirname(new URL(import.meta.url).pathname);
-const secretsDir = path.join(secretsDir, '../');
-
-// instantiate
-const config = new RainbowConfig(configDir, secretsDir);
-
-// load the config from the file system
-await config.load();
-
-// get all of the config
-const allKeys = config.get();
-
-// get some key
-const someKey = config.get('myKey');
+```typescript
+const config = new RainbowConfig();
 ```
 
 
-### Setting up the loader
+### Add an environment: config.addEnvironment(name: string)
 
-```javascrript
-import RainbowConfig from '../es-modules/rainbow-industries/rainbow-config/1.x/RainbowConfig.js';
-import path from 'path';
+You may optionally add an environment. The follwoing envormnents are available:
 
-// gets the path to the dir this script resides in
-const configDir = path.dirname(new URL(import.meta.url).pathname);
+- development
+- testing
+- integration
+- production
 
-// instantiate
-const config = new RainbowConfig(configDir);
-
-// load the config from the file system
-await config.load();
+```typescript
+config.addEnvironment('extra-env');
 ```
 
 
-### Getting config values
+### Change the config directory: config.setConfigDir(relativePath: string)
 
-You may either consume all of the config or jsut some specific value from the config.
+You may change the directory the config files are located in. This defaults to `config`.
 
-**get the complete config file**
-```javascript
-const config = config.get();
-```
 
-**get a specific root level key**
-```javascript
-const dbConfig = config.get('db');
-```
-
-**get a specific nested key**
-```javascript
-const dbHost = config.get('db.main.host');
-```
-
-### Defining custom environments
-
-```javascript
-config.addEnvironment('myEnv');
+```typescript
+config.setConfigDir('conf');
 ```
 
 
+### Load the confguration: config.load(rootDir: string)
+
+In order to load the config, you have to call the `load` method. This will load the config from the `\`${rootPath}/config\`` directory.
+This will load the config file an fill all variables that are either set in the environment or the secrets file. If a variable is not
+found in an env variable, it is assumed, that it shall be loaded from the secrets file, which is located in the `rootPath` passed to the
+`load(rootPath: string)` method. The secrets file has the name `\`secrets.${environment}.yaml\``.
+
+
+```typescript
+const rootdir = path.join(path.dirname(new URL(import.meta.url).pathname, '../');
+await config.load(rootdir);
+```
+
+
+### Get a config value: config.get(path: string | undefined)
+
+Get the complete config object.
+
+```typescript
+const configData = config.get(undefined);
+```
+
+
+Get the a partial config object
+
+```typescript
+const configData = config.get(`db.main`);
+```
+
+
+Get the a specific key
+
+```typescript
+const configData = config.get(`db.main.password`);
+```

@@ -1,0 +1,17 @@
+{
+  "extends": "@tsconfig/node16/tsconfig.json",
+  "compilerOptions": {
+    "preserveConstEnums": true,
+    "outDir": "dist",
+    "strictPropertyInitialization": false,
+    "target": "es2021",
+    "module": "nodenext",
+    "strict": true,
+    "esModuleInterop": true,
+    "forceConsistentCasingInFileNames": true,
+    "sourceMap": true,
+    "declaration": true
+  },
+  "include": ["src/**/*", "tests/**/*", "index.ts"],
+  "exclude": ["node_modules", "**/*.spec.ts"]
+}
