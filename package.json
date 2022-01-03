@@ -1,7 +1,7 @@
 {
   "type": "module",
   "name": "@rainbow-industries/rainbow-config",
-  "version": "2.0.0",
+  "version": "2.0.1",
   "description": "A YAML config file loader",
   "dependencies": {
     "yaml": "^1.10.2"
