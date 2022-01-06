@@ -3,7 +3,10 @@ import fs from 'fs';
 import yaml from 'yaml';
 const { promises: { readFile } } = fs;
 export default class RainbowConfig {
-    constructor() {
+    /**
+     * @param env the enviroment to use for loading the config file
+     */
+    constructor(env) {
         this.secrets = new Map();
         this.environments = new Set([
             'development',
@@ -11,9 +14,18 @@ export default class RainbowConfig {
             'integration',
             'production',
         ]);
+        this.environmentMap = new Map([
+            ['dev', 'development'],
+            ['test', 'testing'],
+            ['int', 'integration'],
+            ['prod', 'production']
+        ]);
         this.isLoaded = false;
         this.secretsFileLoaded = false;
         this.configDir = 'config';
+        if (typeof env === 'string') {
+            this.env = env;
+        }
     }
     /**
      * change the directory the config files are stored in
@@ -217,25 +229,54 @@ export default class RainbowConfig {
      * @returns string the envornment name
      */
     detectEnvironmentName() {
+        if (this.env !== undefined) {
+            const env = this.getTranslatedEnvironment(this.env);
+            this.validateEnvironment(env);
+            return env;
+        }
         for (const param of process.argv) {
-            const name = param.substring(2).toLowerCase();
+            const name = this.getTranslatedEnvironment(param.substring(2).toLowerCase());
             if (this.environments.has(name)) {
                 return name;
             }
         }
         if (process.env.RAINBOW_ENV) {
-            if (this.environments.has(process.env.RAINBOW_ENV)) {
-                return process.env.RAINBOW_ENV;
+            const env = this.getTranslatedEnvironment(process.env.RAINBOW_ENV);
+            if (this.environments.has(env)) {
+                return env;
             }
             throw new Error(`Unknown environment '${process.env.RAINBOW_ENV}' set using the environment variable RAINBOW_ENV!`);
         }
         if (process.env.NODE_ENV) {
-            if (this.environments.has(process.env.NODE_ENV)) {
-                return process.env.NODE_ENV;
+            const env = this.getTranslatedEnvironment(process.env.NODE_ENV);
+            if (this.environments.has(env)) {
+                return env;
             }
             throw new Error(`Unknown environment '${process.env.NODE_ENV}' set using the environment variable NODE_ENV!`);
         }
         throw new Error(`Failed to determine the environment. Please specify it using the NODE_ENV, RAINBOW_ENV environment variables or the commandline parameter --[environment]. Valid environments are: ${Array.from(this.environments.keys()).join(', ')}!`);
+    }
+    /**
+     * checks if there is an alternative name for a given environment name, translates it if yes
+     *
+     * @param env the name of the enviroment to translate
+     * @returns the translated or original environment if no translation was found
+     */
+    getTranslatedEnvironment(env) {
+        if (this.environmentMap.has(env)) {
+            return this.environmentMap.get(env);
+        }
+        return env;
+    }
+    /**
+     * determines if the given environment is registered and thus valid
+     *
+     * @param env the environment name
+     */
+    validateEnvironment(env) {
+        if (!this.environments.has(env)) {
+            throw new Error(`The environment ${env} is not a valid environment!`);
+        }
     }
 }
 //# sourceMappingURL=RainbowConfig.js.map

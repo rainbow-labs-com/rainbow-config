@@ -5,3 +5,5 @@ src
 tests
 jest.config.json
 tslint.json
+build/tests
+build/**/*.test.js

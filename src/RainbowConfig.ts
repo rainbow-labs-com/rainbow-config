@@ -17,10 +17,27 @@ export default class RainbowConfig {
         'production',
     ]);
 
+    private readonly environmentMap : Map<string, string> = new Map([
+        ['dev', 'development'],
+        ['test', 'testing'],
+        ['int', 'integration'],
+        ['prod', 'production']
+    ]);
+
     private env: string;
     private isLoaded: boolean = false;
     private secretsFileLoaded: boolean = false;
     private configDir: string = 'config';
+
+
+    /**
+     * @param env the enviroment to use for loading the config file
+     */
+    constructor(env : string | undefined ) {
+        if (typeof env === 'string') {
+            this.env = env;
+        }
+    }
 
 
     /**
@@ -269,8 +286,14 @@ export default class RainbowConfig {
      * @returns string the envornment name
      */
     private detectEnvironmentName(): string {
+        if (this.env !== undefined) {
+            const env = this.getTranslatedEnvironment(this.env);
+            this.validateEnvironment(env);
+            return env;
+        }
+
         for (const param of process.argv) {
-            const name = param.substring(2).toLowerCase();
+            const name = this.getTranslatedEnvironment(param.substring(2).toLowerCase());
 
             if (this.environments.has(name)) {
                 return name;
@@ -278,21 +301,52 @@ export default class RainbowConfig {
         }
 
         if (process.env.RAINBOW_ENV) {
-            if (this.environments.has(process.env.RAINBOW_ENV)){
-                return process.env.RAINBOW_ENV;
+            const env = this.getTranslatedEnvironment(process.env.RAINBOW_ENV);
+            if (this.environments.has(env)) {
+                return env;
             }
 
             throw new Error(`Unknown environment '${process.env.RAINBOW_ENV}' set using the environment variable RAINBOW_ENV!`);
         }
 
         if (process.env.NODE_ENV) {
-            if (this.environments.has(process.env.NODE_ENV)){
-                return process.env.NODE_ENV;
+            const env = this.getTranslatedEnvironment(process.env.NODE_ENV);
+
+            if (this.environments.has(env)){
+                return env;
             }
 
             throw new Error(`Unknown environment '${process.env.NODE_ENV}' set using the environment variable NODE_ENV!`);
         }
 
         throw new Error(`Failed to determine the environment. Please specify it using the NODE_ENV, RAINBOW_ENV environment variables or the commandline parameter --[environment]. Valid environments are: ${Array.from(this.environments.keys()).join(', ')}!`);
+    }
+
+
+
+    /**
+     * checks if there is an alternative name for a given environment name, translates it if yes
+     * 
+     * @param env the name of the enviroment to translate
+     * @returns the translated or original environment if no translation was found
+     */
+    getTranslatedEnvironment(env : string) : string {
+        if (this.environmentMap.has(env)) {
+            return this.environmentMap.get(env)!;
+        } 
+
+        return env;
+    }
+
+
+    /**
+     * determines if the given environment is registered and thus valid
+     * 
+     * @param env the environment name
+     */
+    private validateEnvironment(env: string) {
+        if (!this.environments.has(env)) {
+            throw new Error(`The environment ${env} is not a valid environment!`);
+        }
     }
 }

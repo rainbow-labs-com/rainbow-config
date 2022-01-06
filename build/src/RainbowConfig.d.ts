@@ -2,10 +2,15 @@ export default class RainbowConfig {
     private config;
     private secrets;
     private readonly environments;
+    private readonly environmentMap;
     private env;
     private isLoaded;
     private secretsFileLoaded;
     private configDir;
+    /**
+     * @param env the enviroment to use for loading the config file
+     */
+    constructor(env: string | undefined);
     /**
      * change the directory the config files are stored in
      *
@@ -90,4 +95,17 @@ export default class RainbowConfig {
      * @returns string the envornment name
      */
     private detectEnvironmentName;
+    /**
+     * checks if there is an alternative name for a given environment name, translates it if yes
+     *
+     * @param env the name of the enviroment to translate
+     * @returns the translated or original environment if no translation was found
+     */
+    getTranslatedEnvironment(env: string): string;
+    /**
+     * determines if the given environment is registered and thus valid
+     *
+     * @param env the environment name
+     */
+    private validateEnvironment;
 }
