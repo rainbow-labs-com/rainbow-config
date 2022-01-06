@@ -42,12 +42,16 @@ export default class RainbowConfig {
      * Add an environment to your application
      *
      * @param name environment name
+     * @param alternativeName alternative environment name that maps to the name i.e. int vs integration
      */
-    addEnvironment(name) {
+    addEnvironment(name, alternativeName) {
         if (this.isLoaded) {
             throw new Error(`Cannot add an environment after the configuration was loaded!`);
         }
         this.environments.add(name);
+        if (typeof alternativeName === 'string') {
+            this.environmentMap.set(alternativeName, name);
+        }
     }
     /**
      * Returns the execution environment name

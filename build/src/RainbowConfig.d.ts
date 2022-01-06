@@ -10,7 +10,7 @@ export default class RainbowConfig {
     /**
      * @param env the enviroment to use for loading the config file
      */
-    constructor(env: string | undefined);
+    constructor(env?: string);
     /**
      * change the directory the config files are stored in
      *
@@ -21,8 +21,9 @@ export default class RainbowConfig {
      * Add an environment to your application
      *
      * @param name environment name
+     * @param alternativeName alternative environment name that maps to the name i.e. int vs integration
      */
-    addEnvironment(name: string): void;
+    addEnvironment(name: string, alternativeName?: string): void;
     /**
      * Returns the execution environment name
      *
