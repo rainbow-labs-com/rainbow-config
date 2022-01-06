@@ -1,7 +1,7 @@
 {
   "type": "module",
   "name": "@rainbow-industries/rainbow-config",
-  "version": "2.2.0",
+  "version": "2.2.1",
   "description": "A YAML config file loader",
   "dependencies": {
     "typescript": "^4.5.4",
