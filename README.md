@@ -36,12 +36,12 @@ MAIN_DB_PASS: soSecureICantBelieveIt
 
 ## Environments
 
-The config loader decides based on the environment which config file to load. The following default environments are available (you may also define custom environments):
+The config loader decides based on the environment which config file to load. The following default environments are available (alternativ names):
 
-- development
-- testing
-- integration
-- production
+- development (dev)
+- testing (test)
+- integration (int)
+- production (prod)
 
 The environment can either be set by passing it as parameter to the application (e.g. `--develpment`) or by defining it in the `RAINBOW_ENV` or `NODE_ENV` environment variable.
 
@@ -84,7 +84,7 @@ console.log(dbPassword);
 
 ### Constructor: instantiate the config class
 
-The constructor doesn't take any arguments
+The constructor accepts optionaly the environment name
 
 ```typescript
 const config = new RainbowConfig();
@@ -93,15 +93,18 @@ const config = new RainbowConfig();
 
 ### Add an environment: config.addEnvironment(name: string)
 
-You may optionally add an environment. The follwoing envormnents are available:
+You may optionally add an environment. You may also specify an alternative name that maps
+to the environment name i.e. int for integration.
 
-- development
-- testing
-- integration
-- production
+The follwoing envormnents are available (alternative names):
+
+- development (dev)
+- testing (test)
+- integration (int)
+- production (prod)
 
 ```typescript
-config.addEnvironment('extra-env');
+config.addEnvironment('extra-env', 'alternative-name-for-extra-env');
 ```
 
 
