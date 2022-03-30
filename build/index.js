@@ -1,3 +1,3 @@
 import RainboxConfig from './src/RainbowConfig.js';
-export default RainboxConfig;
+export { RainboxConfig as default, };
 //# sourceMappingURL=index.js.map

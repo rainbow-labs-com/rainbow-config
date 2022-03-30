@@ -4,9 +4,17 @@ import yaml from 'yaml';
 
 const { promises: { readFile } } = fs;
 
+export interface ISomeRetunrType {
+    name: string;
+    value: string;
+}
 
+/**
+ * YAML config file loader
+ * 
+ * @public
+ */
 export default class RainbowConfig {
-
 
     private config: any;
     private secrets: Map<string, string | number | boolean> = new Map();
@@ -30,10 +38,18 @@ export default class RainbowConfig {
     private configDir: string = 'config';
 
 
+    hi(): ISomeRetunrType {
+        return {
+            name: 'Hello',
+            value: 'World'
+        }
+    }
+
+
     /**
-     * @param env the enviroment to use for loading the config file
+     * @param env - the environment to use for loading the config file
      */
-    constructor(env? : string ) {
+    constructor(env? : string) {
         if (typeof env === 'string') {
             this.env = env;
         }
@@ -43,7 +59,7 @@ export default class RainbowConfig {
     /**
      * change the directory the config files are stored in
      * 
-     * @param configDir the directory the configfiles are stored in
+     * @param configDir - the directory the configfiles are stored in
      */
     setConfigDir(configDir: string) : void {
         if (this.isLoaded) {
@@ -57,8 +73,8 @@ export default class RainbowConfig {
     /**
      * Add an environment to your application
      * 
-     * @param name environment name
-     * @param alternativeName alternative environment name that maps to the name i.e. int vs integration
+     * @param name - environment name
+     * @param alternativeName - alternative environment name that maps to the name i.e. int vs integration
      */
     addEnvironment(name: string, alternativeName?: string) {
         if (this.isLoaded) {
@@ -90,7 +106,7 @@ export default class RainbowConfig {
     /**
      * Load a value from the config file
      * 
-     * @param key the config key to get. Can be a path separated by .
+     * @param key - the config key to get. Can be a path separated by .
      * @returns the config item
      */
     get(key: string | undefined) : any {
@@ -109,9 +125,9 @@ export default class RainbowConfig {
     /**
      * Get config values from the ensted config object
      * 
-     * @param tree current config tree
-     * @param pathParts parts of the path to retreive
-     * @param index the current index in the path
+     * @param tree - current config tree
+     * @param pathParts - parts of the path to retreive
+     * @param index - the current index in the path
      * @returns the config item
      */
     private getValueByPath(tree: any, pathParts: string[], index: number = 0) : any {
@@ -137,7 +153,7 @@ export default class RainbowConfig {
     /**
      * Load the config file for the current environment
      * 
-     * @param rootPath directory where the config director is stored in
+     * @param rootPath - directory where the config director is stored in
      */
     async load(rootPath: string) {
         this.env = this.detectEnvironmentName();
@@ -151,7 +167,7 @@ export default class RainbowConfig {
     /**
      * Load the config file from the disk, replace secrets in it
      * 
-     * @param rootPath the path for the config file
+     * @param rootPath - the path for the config file
      */
     private async loadConfigFile(rootPath: string) : Promise<void> {
         const configPath = path.resolve(rootPath, this.configDir, `${this.env}.yml`);
@@ -174,10 +190,10 @@ export default class RainbowConfig {
     /**
      * substitue values for the secrets in the config file
      * 
-     * @param subTree the current tree to traverse
-     * @param parentKey the name of the property on the parent object
-     * @param parent  the parent object
-     * @param rootPath the path to the secrets file
+     * @param subTree - the current tree to traverse
+     * @param parentKey - the name of the property on the parent object
+     * @param parent - the parent object
+     * @param rootPath - the path to the secrets file
      */
     private async replaceSecrets(subTree: any, parentKey: string = '', parent: any = null, rootPath: string) : Promise<void> {
         if (typeof subTree === 'object' && subTree !== null) {
@@ -199,8 +215,8 @@ export default class RainbowConfig {
     /**
      * Get a secret from the env or the secrets file
      * 
-     * @param key name of the secret
-     * @param rootPath path to the secrets file
+     * @param key - name of the secret
+     * @param rootPath - path to the secrets file
      * @returns secret
      */
     private async getSecret(key: string, rootPath: string): Promise<string | boolean | number> {
@@ -216,8 +232,8 @@ export default class RainbowConfig {
     /**
      * Load a value from the secrets file
      * 
-     * @param key the name of the secret to load
-     * @param rootPath the path where the secrets file is located
+     * @param key - the name of the secret to load
+     * @param rootPath - the path where the secrets file is located
      * @returns value of the secret
      */
     private async getSecretFromFile(key: string, rootPath: string): Promise<string | boolean | number> {
@@ -235,7 +251,7 @@ export default class RainbowConfig {
                     ) {
                         this.secrets.set(key, value);
                     } else {
-                        throw new Error(`Secrets in file ${configPath} need to be  string, bool or number! Field '${key}' is typeof ${typeof value}!`);
+                        throw new Error(`Secrets in file ${configPath} need to be a string, bool or number! Field '${key}' is typeof ${typeof value}!`);
                     }
                 }
             }
@@ -244,7 +260,7 @@ export default class RainbowConfig {
         }
 
         if (!this.secrets.has(key)) {
-            throw new Error(`Failed to load secret ${key}. It is neither provided as environment vairable nor set in the secrets file ${configPath}!`);
+            throw new Error(`Failed to load secret ${key}. It is neither provided as environment variable nor set in the secrets file ${configPath}!`);
         }
 
         return this.secrets.get(key)!;
@@ -255,7 +271,7 @@ export default class RainbowConfig {
     /**
      * Load a yaml file from th efilesystem, parse it
      * 
-     * @param filePath the path of the yml file to load
+     * @param filePath - the path of the yml file to load
      * @returns the parsed yaml object
      */
     private async loadYAMLFile(filePath: string) : Promise<any> {
@@ -332,7 +348,7 @@ export default class RainbowConfig {
     /**
      * checks if there is an alternative name for a given environment name, translates it if yes
      * 
-     * @param env the name of the enviroment to translate
+     * @param env - the name of the enviroment to translate
      * @returns the translated or original environment if no translation was found
      */
     getTranslatedEnvironment(env : string) : string {
@@ -347,7 +363,7 @@ export default class RainbowConfig {
     /**
      * determines if the given environment is registered and thus valid
      * 
-     * @param env the environment name
+     * @param env - the environment name
      */
     private validateEnvironment(env: string) {
         if (!this.environments.has(env)) {

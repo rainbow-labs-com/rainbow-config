@@ -10,7 +10,8 @@
   "scripts": {
     "build": "node ./node_modules/.bin/tsc",
     "test": "node ./node_modules/.bin/tsc && ava",
-    "clean": "rm -r build"
+    "clean": "rm -r build",
+    "docs": "node ../slashdocs/build/slahsdocs.js create"
   },
   "devDependencies": {
     "@ava/typescript": "^3.0.1",
@@ -20,7 +21,7 @@
     "eslint": "^8.6.0"
   },
   "main": "build/index.js",
-  "types": "build/index.d.js",
+  "types": "build/index.d.ts",
   "keywords": [
     "config-loader",
     "config-file",

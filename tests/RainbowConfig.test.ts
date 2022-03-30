@@ -25,7 +25,6 @@ test('Load config file with an invalid config file path', async(t) => {
     });
 });
 
-
 test('Load config in an environment without config file', async(t) => {
     const rootDir = path.join(path.dirname(new URL(import.meta.url).pathname), '../../tests/data');
     const config = new RainbowConfig('prod');
@@ -34,4 +33,25 @@ test('Load config in an environment without config file', async(t) => {
     });
 });
 
+test('Load config file and get a configuration value', async(t) => {
+    const rootDir = path.join(path.dirname(new URL(import.meta.url).pathname), '../../tests/data');
+    const config = new RainbowConfig('dev');
+    await config.load(rootDir);
+    t.is(config.get('db.main.port'), 5432);
+});
 
+test('Load config file and get a configuration value loaded from the secrets file', async(t) => {
+    const rootDir = path.join(path.dirname(new URL(import.meta.url).pathname), '../../tests/data');
+    const config = new RainbowConfig('dev');
+    await config.load(rootDir);
+    t.is(config.get('db.main.password'), 'secure');
+});
+
+test('Load config file and get an inexistent configuration value', async(t) => {
+    const rootDir = path.join(path.dirname(new URL(import.meta.url).pathname), '../../tests/data');
+    const config = new RainbowConfig('dev');
+    await config.load(rootDir);
+    t.throws(() => {
+        config.get('db.main.nope');
+    });
+});
