@@ -191,7 +191,7 @@ export default class RainbowConfig {
     private async replaceSecrets(subTree: any, parentKey: string = '', parent: any = null, rootPath: string, secretsDir?: string) : Promise<void> {
         if (typeof subTree === 'object' && subTree !== null) {
             for (const key of Object.keys(subTree)) {
-                await this.replaceSecrets(subTree[key], key, subTree, rootPath);
+                await this.replaceSecrets(subTree[key], key, subTree, rootPath, secretsDir);
             }
         } else if (typeof subTree === 'string') {
             if (/^\$\{[a-z][a-z0-9_]*\}$/gi.test(subTree)) {
@@ -217,7 +217,7 @@ export default class RainbowConfig {
             return process.env[key]!;
         }
 
-        return this.getSecretFromFile(key, rootPath);
+        return this.getSecretFromFile(key, rootPath, secretsDir);
     }
 
 

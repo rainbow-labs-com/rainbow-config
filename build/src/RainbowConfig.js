@@ -149,7 +149,7 @@ export default class RainbowConfig {
     async replaceSecrets(subTree, parentKey = '', parent = null, rootPath, secretsDir) {
         if (typeof subTree === 'object' && subTree !== null) {
             for (const key of Object.keys(subTree)) {
-                await this.replaceSecrets(subTree[key], key, subTree, rootPath);
+                await this.replaceSecrets(subTree[key], key, subTree, rootPath, secretsDir);
             }
         }
         else if (typeof subTree === 'string') {
@@ -170,7 +170,7 @@ export default class RainbowConfig {
         if (typeof process.env[key] === 'string') {
             return process.env[key];
         }
-        return this.getSecretFromFile(key, rootPath);
+        return this.getSecretFromFile(key, rootPath, secretsDir);
     }
     /**
      * Load a value from the secrets file
