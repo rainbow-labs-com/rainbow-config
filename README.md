@@ -4,11 +4,11 @@ YAML config files made simple for TypeScript and JavaScript using ESM.
 
 ## Changelog
 
-***Version 2.x*** 
-- The constructor does not take any arguments anymore. The path is now passed to the `load()` method
+***Version 3.x*** 
+- The path is now passed to the `load()` method instead of the constructor
 - The `load()` method has now one argument: the path
 - The library was re-implemented using TypeScript and exports types
-- The library can stimm be used using JavaScript
+- The library can still be used using JavaScript
 
 
 ## Example config file
@@ -36,7 +36,7 @@ MAIN_DB_PASS: soSecureICantBelieveIt
 
 ## Environments
 
-The config loader decides based on the environment which config file to load. The following default environments are available (alternativ names):
+The config loader decides based on the environment which config file to load. The following default environments are available (alternative names):
 
 - development (dev)
 - testing (test)
@@ -61,14 +61,14 @@ const config = new RainbowConfig();
 // you may add custom environments
 config.addEnvironment('extra-env');
 
-// you may laod the config from a custom directory, default is config
+// you may load the config from a custom directory, default is config
 config.setConfigDir('conf');
 
 // get the directory where the config filder is located in
 const rootdir = path.join(path.dirname(new URL(import.meta.url).pathname, '../');
 
-// load the config file
-await config.load(rootdir);
+// load the config file (the secrets dir parameter is optional)
+await config.load(rootdir, secretsDir);
 
 // get the full config object
 const allKeys = config.get();
@@ -84,7 +84,7 @@ console.log(dbPassword);
 
 ### Constructor: instantiate the config class
 
-The constructor accepts optionaly the environment name
+The constructor accepts optionaly the environment name asparameter 1
 
 ```typescript
 const config = new RainbowConfig();
@@ -118,12 +118,13 @@ config.setConfigDir('conf');
 ```
 
 
-### Load the confguration: config.load(rootDir: string)
+### Load the confguration: config.load(rootDir: string, secretsDir?: string)
 
 In order to load the config, you have to call the `load` method. This will load the config from the `${rootPath}/config` directory.
 This will load the config file an fill all variables that are either set in the environment or the secrets file. If a variable is not
 found in an env variable, it is assumed, that it shall be loaded from the secrets file, which is located in the `rootPath` passed to the
-`load(rootPath: string)` method. The secrets file has the name `secrets.${environment}.yaml`.
+`load(rootPath: string)` method. The secrets file has the name `secrets.${environment}.yaml`. If the secretsDir is passed to the load method, 
+that directory will be used to load the secrets.
 
 
 ```typescript

@@ -32,12 +32,6 @@ export default class RainbowConfig {
             this.env = env;
         }
     }
-    hi() {
-        return {
-            name: 'Hello',
-            value: 'World'
-        };
-    }
     /**
      * change the directory the config files are stored in
      *
@@ -122,9 +116,9 @@ export default class RainbowConfig {
      *
      * @param rootPath - directory where the config director is stored in
      */
-    async load(rootPath) {
+    async load(rootPath, secretsDir) {
         this.env = this.detectEnvironmentName();
-        await this.loadConfigFile(rootPath);
+        await this.loadConfigFile(rootPath, secretsDir);
         this.isLoaded = true;
     }
     /**
@@ -132,7 +126,7 @@ export default class RainbowConfig {
      *
      * @param rootPath - the path for the config file
      */
-    async loadConfigFile(rootPath) {
+    async loadConfigFile(rootPath, secretsDir) {
         const configPath = path.resolve(rootPath, this.configDir, `${this.env}.yml`);
         try {
             this.config = await this.loadYAMLFile(configPath);
@@ -142,7 +136,7 @@ export default class RainbowConfig {
                 throw new Error(`Failed to load the configuration: ${err.message}`);
             }
         }
-        await this.replaceSecrets(this.config, undefined, undefined, rootPath);
+        await this.replaceSecrets(this.config, undefined, undefined, rootPath, secretsDir);
     }
     /**
      * substitue values for the secrets in the config file
@@ -152,7 +146,7 @@ export default class RainbowConfig {
      * @param parent - the parent object
      * @param rootPath - the path to the secrets file
      */
-    async replaceSecrets(subTree, parentKey = '', parent = null, rootPath) {
+    async replaceSecrets(subTree, parentKey = '', parent = null, rootPath, secretsDir) {
         if (typeof subTree === 'object' && subTree !== null) {
             for (const key of Object.keys(subTree)) {
                 await this.replaceSecrets(subTree[key], key, subTree, rootPath);
@@ -161,7 +155,7 @@ export default class RainbowConfig {
         else if (typeof subTree === 'string') {
             if (/^\$\{[a-z][a-z0-9_]*\}$/gi.test(subTree)) {
                 const key = /^\$\{(?<key>[a-z][a-z0-9_]*)\}$/gi.exec(subTree).groups.key;
-                parent[parentKey] = await this.getSecret(key, rootPath);
+                parent[parentKey] = await this.getSecret(key, rootPath, secretsDir);
             }
         }
     }
@@ -172,7 +166,7 @@ export default class RainbowConfig {
      * @param rootPath - path to the secrets file
      * @returns secret
      */
-    async getSecret(key, rootPath) {
+    async getSecret(key, rootPath, secretsDir) {
         if (typeof process.env[key] === 'string') {
             return process.env[key];
         }
@@ -185,8 +179,8 @@ export default class RainbowConfig {
      * @param rootPath - the path where the secrets file is located
      * @returns value of the secret
      */
-    async getSecretFromFile(key, rootPath) {
-        const configPath = path.resolve(rootPath, `secrets.${this.env}.yml`);
+    async getSecretFromFile(key, rootPath, secretsDir) {
+        const configPath = path.resolve(typeof secretsDir === 'string' ? secretsDir : rootPath, `secrets.${this.env}.yml`);
         if (!this.secretsFileLoaded) {
             const secrets = await this.loadYAMLFile(configPath);
             if (typeof secrets === 'object' && secrets !== null) {

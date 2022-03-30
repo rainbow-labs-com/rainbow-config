@@ -16,7 +16,6 @@ export default class RainbowConfig {
     private isLoaded;
     private secretsFileLoaded;
     private configDir;
-    hi(): ISomeRetunrType;
     /**
      * @param env - the environment to use for loading the config file
      */
@@ -61,7 +60,7 @@ export default class RainbowConfig {
      *
      * @param rootPath - directory where the config director is stored in
      */
-    load(rootPath: string): Promise<void>;
+    load(rootPath: string, secretsDir?: string): Promise<void>;
     /**
      * Load the config file from the disk, replace secrets in it
      *
