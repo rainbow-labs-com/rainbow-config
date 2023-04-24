@@ -5,7 +5,7 @@
   "description": "A YAML config file loader",
   "dependencies": {
     "typescript": "^4.5.4",
-    "yaml": "^1.10.2"
+    "yaml": "^2.2.2"
   },
   "scripts": {
     "build": "node ./node_modules/.bin/tsc",
