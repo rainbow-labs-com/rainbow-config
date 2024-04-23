@@ -87,6 +87,24 @@ export default class RainbowConfig {
         }
     }
     /**
+     * Check if a key exists in the config
+     *
+     * @param key - the key to check for
+     * @returns boolean if the key exists
+     */
+    has(key) {
+        if (!this.isLoaded) {
+            throw new Error(`Cannot return config value for key ${key}. Please call the load() method on the RainbowConfig first!`);
+        }
+        try {
+            this.getValueByPath(this.config, key.split('.'));
+            return true;
+        }
+        catch (err) {
+            return false;
+        }
+    }
+    /**
      * Get config values from the ensted config object
      *
      * @param tree - current config tree

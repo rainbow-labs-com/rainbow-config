@@ -102,7 +102,7 @@ export default class RainbowConfig {
      * @param key - the config key to get. Can be a path separated by .
      * @returns the config item
      */
-    get(key: string | undefined) : any {
+    get(key?: string) : any {
         if (!this.isLoaded) {
             throw new Error(`Cannot return config value for key ${key}. Please call the load() method on the RainbowConfig first!`);
         }
@@ -111,6 +111,26 @@ export default class RainbowConfig {
             return this.config;
         } else {
             return this.getValueByPath(this.config, key.split('.'));
+        }
+    }
+
+
+    /**
+     * Check if a key exists in the config
+     * 
+     * @param key - the key to check for
+     * @returns boolean if the key exists
+     */
+    has(key: string) : boolean {
+        if (!this.isLoaded) {
+            throw new Error(`Cannot return config value for key ${key}. Please call the load() method on the RainbowConfig first!`);
+        }
+
+        try {
+            this.getValueByPath(this.config, key.split('.'));
+            return true;
+        } catch (err) {
+            return false;
         }
     }
 

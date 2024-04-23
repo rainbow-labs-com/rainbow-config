@@ -45,7 +45,14 @@ export default class RainbowConfig {
      * @param key - the config key to get. Can be a path separated by .
      * @returns the config item
      */
-    get(key: string | undefined): any;
+    get(key?: string): any;
+    /**
+     * Check if a key exists in the config
+     *
+     * @param key - the key to check for
+     * @returns boolean if the key exists
+     */
+    has(key: string): boolean;
     /**
      * Get config values from the ensted config object
      *
