@@ -150,7 +150,7 @@ export default class RainbowConfig {
 
         const currentKey = pathParts[index];
 
-        if (tree[currentKey]) {
+        if (tree[currentKey] !== undefined) {
             if (index === pathParts.length - 1) {
                 return tree[currentKey];
             } else {

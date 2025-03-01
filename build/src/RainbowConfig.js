@@ -117,7 +117,7 @@ export default class RainbowConfig {
             throw new Error(`Cannot return config value for key: ${pathParts.join('.')}: Index out of range or empty key!`);
         }
         const currentKey = pathParts[index];
-        if (tree[currentKey]) {
+        if (tree[currentKey] !== undefined) {
             if (index === pathParts.length - 1) {
                 return tree[currentKey];
             }
