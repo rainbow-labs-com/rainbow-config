@@ -116,6 +116,29 @@ export default class RainbowConfig {
 
 
     /**
+     * Load an optional value from the config file
+     *
+     * @param key - the config key to get. Can be a path separated by .
+     * @returns the config item or undefined when not found
+     */
+    getOptional(key?: string) : any {
+        if (!this.isLoaded) {
+            throw new Error(`Cannot return config value for key ${key}. Please call the load() method on the RainbowConfig first!`);
+        }
+
+        if (typeof key === 'undefined') {
+            return this.config;
+        }
+
+        try {
+            return this.getValueByPath(this.config, key.split('.'));
+        } catch (err) {
+            return undefined;
+        }
+    }
+
+
+    /**
      * Check if a key exists in the config
      * 
      * @param key - the key to check for

@@ -47,6 +47,13 @@ export default class RainbowConfig {
      */
     get(key?: string): any;
     /**
+     * Load an optional value from the config file
+     *
+     * @param key - the config key to get. Can be a path separated by .
+     * @returns the config item or undefined when not found
+     */
+    getOptional(key?: string): any;
+    /**
      * Check if a key exists in the config
      *
      * @param key - the key to check for

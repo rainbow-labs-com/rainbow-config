@@ -55,3 +55,17 @@ test('Load config file and get an inexistent configuration value', async(t) => {
         config.get('db.main.nope');
     });
 });
+
+test('Load config file and get an optional existing value', async(t) => {
+    const rootDir = path.join(path.dirname(new URL(import.meta.url).pathname), '../../tests/data');
+    const config = new RainbowConfig('dev');
+    await config.load(rootDir);
+    t.is(config.getOptional('db.main.port'), 5432);
+});
+
+test('Load config file and get an optional missing value', async(t) => {
+    const rootDir = path.join(path.dirname(new URL(import.meta.url).pathname), '../../tests/data');
+    const config = new RainbowConfig('dev');
+    await config.load(rootDir);
+    t.is(config.getOptional('db.main.nope'), undefined);
+});
