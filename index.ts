@@ -1,9 +1,10 @@
-import RainboxConfig, { ISomeRetunrType } from './src/RainbowConfig.js';
+import RainbowConfig, { IRainbowConfig, ISomeRetunrType } from './src/RainbowConfig.js';
 
 
 
 
 export {
-    RainboxConfig as default,
+    RainbowConfig as default,
+    IRainbowConfig,
     ISomeRetunrType,
 }

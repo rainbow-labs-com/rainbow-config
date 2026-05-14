@@ -106,6 +106,24 @@ export default class RainbowConfig {
             return undefined;
         }
     }
+    getString(key) {
+        return this.requireType(key, this.get(key), 'string');
+    }
+    getNumber(key) {
+        return this.requireType(key, this.get(key), 'number');
+    }
+    getBoolean(key) {
+        return this.requireType(key, this.get(key), 'boolean');
+    }
+    getOptionalString(key) {
+        return this.getOptionalTypedValue(key, 'string');
+    }
+    getOptionalNumber(key) {
+        return this.getOptionalTypedValue(key, 'number');
+    }
+    getOptionalBoolean(key) {
+        return this.getOptionalTypedValue(key, 'boolean');
+    }
     /**
      * Check if a key exists in the config
      *
@@ -148,6 +166,28 @@ export default class RainbowConfig {
         else {
             throw new Error(`Cannot return config for key ${pathParts.join('.')}: section ${pathParts[index]} does not exist!`);
         }
+    }
+    getOptionalTypedValue(key, expectedType) {
+        const value = this.getOptional(key);
+        if (typeof value === 'undefined') {
+            return undefined;
+        }
+        return this.requireType(key, value, expectedType);
+    }
+    requireType(key, value, expectedType) {
+        if (typeof value !== expectedType) {
+            throw new Error(`Cannot return config value for key ${key}: expected ${expectedType} but received ${this.getTypeName(value)}!`);
+        }
+        return value;
+    }
+    getTypeName(value) {
+        if (value === null) {
+            return 'null';
+        }
+        if (Array.isArray(value)) {
+            return 'array';
+        }
+        return typeof value;
     }
     /**
      * Load the config file for the current environment

@@ -9,12 +9,25 @@ export interface ISomeRetunrType {
     value: string;
 }
 
+export interface IRainbowConfig {
+    getEnvironment(): string;
+    get<T = unknown>(key?: string): T;
+    getOptional<T = unknown>(key?: string): T | undefined;
+    has(key: string): boolean;
+    getString(key: string): string;
+    getNumber(key: string): number;
+    getBoolean(key: string): boolean;
+    getOptionalString(key: string): string | undefined;
+    getOptionalNumber(key: string): number | undefined;
+    getOptionalBoolean(key: string): boolean | undefined;
+}
+
 /**
  * YAML config file loader
  * 
  * @public
  */
-export default class RainbowConfig {
+export default class RainbowConfig implements IRainbowConfig {
 
     private config: any;
     private secrets: Map<string, string | number | boolean> = new Map();
@@ -102,15 +115,15 @@ export default class RainbowConfig {
      * @param key - the config key to get. Can be a path separated by .
      * @returns the config item
      */
-    get(key?: string) : any {
+    get<T = unknown>(key?: string) : T {
         if (!this.isLoaded) {
             throw new Error(`Cannot return config value for key ${key}. Please call the load() method on the RainbowConfig first!`);
         }
 
         if (typeof key === 'undefined') {
-            return this.config;
+            return this.config as T;
         } else {
-            return this.getValueByPath(this.config, key.split('.'));
+            return this.getValueByPath(this.config, key.split('.')) as T;
         }
     }
 
@@ -121,20 +134,44 @@ export default class RainbowConfig {
      * @param key - the config key to get. Can be a path separated by .
      * @returns the config item or undefined when not found
      */
-    getOptional(key?: string) : any {
+    getOptional<T = unknown>(key?: string) : T | undefined {
         if (!this.isLoaded) {
             throw new Error(`Cannot return config value for key ${key}. Please call the load() method on the RainbowConfig first!`);
         }
 
         if (typeof key === 'undefined') {
-            return this.config;
+            return this.config as T;
         }
 
         try {
-            return this.getValueByPath(this.config, key.split('.'));
+            return this.getValueByPath(this.config, key.split('.')) as T;
         } catch (err) {
             return undefined;
         }
+    }
+
+    getString(key: string): string {
+        return this.requireType(key, this.get<unknown>(key), 'string');
+    }
+
+    getNumber(key: string): number {
+        return this.requireType(key, this.get<unknown>(key), 'number');
+    }
+
+    getBoolean(key: string): boolean {
+        return this.requireType(key, this.get<unknown>(key), 'boolean');
+    }
+
+    getOptionalString(key: string): string | undefined {
+        return this.getOptionalTypedValue<string>(key, 'string');
+    }
+
+    getOptionalNumber(key: string): number | undefined {
+        return this.getOptionalTypedValue<number>(key, 'number');
+    }
+
+    getOptionalBoolean(key: string): boolean | undefined {
+        return this.getOptionalTypedValue<boolean>(key, 'boolean');
     }
 
 
@@ -182,6 +219,36 @@ export default class RainbowConfig {
         } else {
             throw new Error(`Cannot return config for key ${pathParts.join('.')}: section ${pathParts[index]} does not exist!`);
         }
+    }
+
+    private getOptionalTypedValue<T extends string | number | boolean>(key: string, expectedType: 'string' | 'number' | 'boolean'): T | undefined {
+        const value = this.getOptional<unknown>(key);
+
+        if (typeof value === 'undefined') {
+            return undefined;
+        }
+
+        return this.requireType<T>(key, value, expectedType);
+    }
+
+    private requireType<T extends string | number | boolean>(key: string, value: unknown, expectedType: 'string' | 'number' | 'boolean'): T {
+        if (typeof value !== expectedType) {
+            throw new Error(`Cannot return config value for key ${key}: expected ${expectedType} but received ${this.getTypeName(value)}!`);
+        }
+
+        return value as T;
+    }
+
+    private getTypeName(value: unknown): string {
+        if (value === null) {
+            return 'null';
+        }
+
+        if (Array.isArray(value)) {
+            return 'array';
+        }
+
+        return typeof value;
     }
 
 

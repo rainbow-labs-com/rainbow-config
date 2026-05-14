@@ -2,12 +2,24 @@ export interface ISomeRetunrType {
     name: string;
     value: string;
 }
+export interface IRainbowConfig {
+    getEnvironment(): string;
+    get<T = unknown>(key?: string): T;
+    getOptional<T = unknown>(key?: string): T | undefined;
+    has(key: string): boolean;
+    getString(key: string): string;
+    getNumber(key: string): number;
+    getBoolean(key: string): boolean;
+    getOptionalString(key: string): string | undefined;
+    getOptionalNumber(key: string): number | undefined;
+    getOptionalBoolean(key: string): boolean | undefined;
+}
 /**
  * YAML config file loader
  *
  * @public
  */
-export default class RainbowConfig {
+export default class RainbowConfig implements IRainbowConfig {
     private config;
     private secrets;
     private readonly environments;
@@ -45,14 +57,20 @@ export default class RainbowConfig {
      * @param key - the config key to get. Can be a path separated by .
      * @returns the config item
      */
-    get(key?: string): any;
+    get<T = unknown>(key?: string): T;
     /**
      * Load an optional value from the config file
      *
      * @param key - the config key to get. Can be a path separated by .
      * @returns the config item or undefined when not found
      */
-    getOptional(key?: string): any;
+    getOptional<T = unknown>(key?: string): T | undefined;
+    getString(key: string): string;
+    getNumber(key: string): number;
+    getBoolean(key: string): boolean;
+    getOptionalString(key: string): string | undefined;
+    getOptionalNumber(key: string): number | undefined;
+    getOptionalBoolean(key: string): boolean | undefined;
     /**
      * Check if a key exists in the config
      *
@@ -69,6 +87,9 @@ export default class RainbowConfig {
      * @returns the config item
      */
     private getValueByPath;
+    private getOptionalTypedValue;
+    private requireType;
+    private getTypeName;
     /**
      * Load the config file for the current environment
      *
