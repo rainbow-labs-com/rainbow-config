@@ -4,8 +4,8 @@ export interface ISomeRetunrType {
 }
 export interface IRainbowConfig {
     getEnvironment(): string;
-    get<T = unknown>(key?: string): T;
-    getOptional<T = unknown>(key?: string): T | undefined;
+    get<T>(key?: string): T;
+    getOptional<T>(key?: string): T | undefined;
     has(key: string): boolean;
     getString(key: string): string;
     getNumber(key: string): number;
@@ -57,14 +57,14 @@ export default class RainbowConfig implements IRainbowConfig {
      * @param key - the config key to get. Can be a path separated by .
      * @returns the config item
      */
-    get<T = unknown>(key?: string): T;
+    get<T>(key?: string): T;
     /**
      * Load an optional value from the config file
      *
      * @param key - the config key to get. Can be a path separated by .
      * @returns the config item or undefined when not found
      */
-    getOptional<T = unknown>(key?: string): T | undefined;
+    getOptional<T>(key?: string): T | undefined;
     getString(key: string): string;
     getNumber(key: string): number;
     getBoolean(key: string): boolean;

@@ -11,8 +11,8 @@ export interface ISomeRetunrType {
 
 export interface IRainbowConfig {
     getEnvironment(): string;
-    get<T = unknown>(key?: string): T;
-    getOptional<T = unknown>(key?: string): T | undefined;
+    get<T>(key?: string): T;
+    getOptional<T>(key?: string): T | undefined;
     has(key: string): boolean;
     getString(key: string): string;
     getNumber(key: string): number;
@@ -115,7 +115,7 @@ export default class RainbowConfig implements IRainbowConfig {
      * @param key - the config key to get. Can be a path separated by .
      * @returns the config item
      */
-    get<T = unknown>(key?: string) : T {
+    get<T>(key?: string) : T {
         if (!this.isLoaded) {
             throw new Error(`Cannot return config value for key ${key}. Please call the load() method on the RainbowConfig first!`);
         }
@@ -134,7 +134,7 @@ export default class RainbowConfig implements IRainbowConfig {
      * @param key - the config key to get. Can be a path separated by .
      * @returns the config item or undefined when not found
      */
-    getOptional<T = unknown>(key?: string) : T | undefined {
+    getOptional<T>(key?: string) : T | undefined {
         if (!this.isLoaded) {
             throw new Error(`Cannot return config value for key ${key}. Please call the load() method on the RainbowConfig first!`);
         }
