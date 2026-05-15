@@ -1,25 +1,9 @@
-export interface ISomeRetunrType {
-    name: string;
-    value: string;
-}
-export interface IRainbowConfig {
-    getEnvironment(): string;
-    get<T>(key?: string): T;
-    getOptional<T>(key?: string): T | undefined;
-    has(key: string): boolean;
-    getString(key: string): string;
-    getNumber(key: string): number;
-    getBoolean(key: string): boolean;
-    getOptionalString(key: string): string | undefined;
-    getOptionalNumber(key: string): number | undefined;
-    getOptionalBoolean(key: string): boolean | undefined;
-}
 /**
  * YAML config file loader
  *
  * @public
  */
-export default class RainbowConfig implements IRainbowConfig {
+export default class RainbowConfig {
     private config;
     private secrets;
     private readonly environments;

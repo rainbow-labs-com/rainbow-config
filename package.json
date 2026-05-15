@@ -9,16 +9,14 @@
   },
   "scripts": {
     "build": "node ./node_modules/.bin/tsc",
-    "test": "node ./node_modules/.bin/tsc && ava",
-    "clean": "rm -r build",
-    "docs": "node ../slashdocs/build/slahsdocs.js create"
+    "test": "node ./node_modules/.bin/tsc && node ./node_modules/.bin/section ./build/tests/**/*.test.js",
+    "clean": "rm -r build"
   },
   "devDependencies": {
-    "@ava/typescript": "^5.0.0",
     "@tsconfig/node16": "^16.1.3",
     "@types/node": "^22.14.1",
-    "ava": "^6.2.0",
-    "eslint": "^9.24.0"
+    "eslint": "^9.24.0",
+    "section-tests": "^5.0.18"
   },
   "main": "build/index.js",
   "types": "build/index.d.ts",

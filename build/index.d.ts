@@ -1,3 +1,4 @@
-import RainbowConfig, { IRainbowConfig, ISomeRetunrType } from './src/RainbowConfig.js';
-export { RainbowConfig as default, IRainbowConfig, ISomeRetunrType, };
+import RainbowConfig from './src/RainbowConfig.js';
+export default RainbowConfig;
+export type RainbowConfigType = InstanceType<typeof RainbowConfig>;
 //# sourceMappingURL=index.d.ts.map

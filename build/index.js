@@ -1,3 +1,3 @@
 import RainbowConfig from './src/RainbowConfig.js';
-export { RainbowConfig as default, };
+export default RainbowConfig;
 //# sourceMappingURL=index.js.map
